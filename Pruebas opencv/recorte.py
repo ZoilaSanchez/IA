@@ -12,13 +12,13 @@ def show_image(text, img):
 
 def recortar(imgpath, num):
     img = cv2.imread(imgpath, 1)
-    directory = 'C:/Users/ACER/Desktop/Salida/'
+    directory = 'C:/Users/ACER/Desktop/Salida/PODRIDO'
     # Se define la dirección de donde se escribirá cada imágen nueva
     os.chdir(directory)
     # Como una prueba, se estandariza el tamaño de las imágenes a 800x800 para que se pueda visualizar los cambios de
     # mejor manera, debido a que están tomadas en alta calidad.
-    width = 800
-    height = 800
+    width = 760
+    height = 760
     # Se sefine el ancho por alto
     dim = (width, height)
     resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
@@ -27,10 +27,10 @@ def recortar(imgpath, num):
     gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
     # show_image('original', gray)
     # Se hace uso de los desenfoques gaussianos, primero usando un kernel de 5x5 con un cv.BORDER_CONSTANT
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    blurred = cv2.GaussianBlur(gray, (15, 15), 0)
     # show_image('grises gaussian blur', blurred)
     # Luego usamos otro kernel de 7x7, pero mantenemos el tipo de borde
-    blurred = cv2.GaussianBlur(blurred, (7, 7), 0)
+    # blurred = cv2.GaussianBlur(blurred, (7, 7), 0)
     # show_image('grises gaussian blur', blurred)
     # Se hace uso de el detector de bordes cv2.canny, en el que se mandan como parámetros un umbral por histéresis en el
     # cual si un pixel es mayor o está entre los dos valores se toma como parte del borde, caso contrario se descarta.
@@ -40,7 +40,8 @@ def recortar(imgpath, num):
     # Aunque ahora se detectan más detalles, necesitamos un contorno más grande que represente el borde del aguacate,
     # por lo tanto se hace uso de cv2.dilate, que lo que hace es aumentar la región blanca que se encuentra en la
     # máscara hecha con canny, lo que permite unir partes del contorno que puedan estar ligeramente separadas.
-    edges = cv2.dilate(canny, None)
+    for i in range(0, 3):
+        edges = cv2.dilate(canny, None)
     # show_image('dilate', edges)
     # Ahora que se aumenta la probabilidad de tener un contorno que englobe al aguacate, se procede a crear el array que
     # contenga la información de los contornos hallados.
@@ -63,7 +64,7 @@ def recortar(imgpath, num):
 
 # Se hace un ciclo que recorra todos los elementos de la carpeta elegida y obtener estas mismas imágenes pero sin la
 # información innecesaria
-images_path = 'C:/Users/ACER/Desktop/Copia/IA/Aguacates/MADURO'
+images_path = 'C:/Users/ACER/Documents/GitHub/IA/Aguacates/PODRIDO'
 mylist = os.listdir(images_path)
 i = 1
 for pos in mylist:

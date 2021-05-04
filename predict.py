@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 import os
@@ -12,6 +11,17 @@ mylist = os.listdir(images_path)
 # Se carga el modelo previamente entrenado (En este caso es un modelo con 50 épocas y con data augmentation)
 keras_model_path = "C:/Users/ACER/Desktop/Copia/IA/Modelo2"
 restored_keras_model = tf.keras.models.load_model(keras_model_path)
+
+
+# Función para devolver el tiempo aproximado en el que se podrá consumir el aguacate.
+def print_time_left(etiqueta):
+    if etiqueta == 2:
+        chain = "Tiempo de maduración restante aproximado: 4-5 días."
+    elif etiqueta == 1:
+        chain = "Está sobremadurado, no se recomienda para consumo."
+    elif etiqueta == 0:
+        chain = "¡Listo para comer! \nAún se puede almacenar entre 1-2 días."
+    return chain
 
 
 def show_image(text, img):
@@ -33,7 +43,7 @@ def recortar(path):
     gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (47, 47), 0)
     # blurred = cv2.GaussianBlur(blurred, (7, 7), 0)
-    canny = cv2.Canny(blurred, 100, 300, apertureSize=5)     # apertura debe estar entre 3 y 7
+    canny = cv2.Canny(blurred, 100, 300, apertureSize=5)  # apertura debe estar entre 3 y 7
     show_image('canny', canny)
     edges = cv2.dilate(canny, None)
     show_image('dilate', edges)
@@ -52,13 +62,14 @@ def recortar(path):
 
 
 # Se carga la imagen y se muestra el proceso para quitar el fondo.
-img_path = 'C:/Users/ACER/Desktop/Pruebas/avo1.jpg'
+img_path = 'C:/Users/ACER/Desktop/Pruebas/avocado7.jpg'
 recortar(img_path)
 img_height = 180
 img_width = 180
 # Se carga la imágen a analizar con un preprocesamiento que la estandariza al tamaño con el que se entrenó la CNN
 img = keras.preprocessing.image.load_img(
-    'D:/URL/Séptimo ciclo 2021/Inteligencia artificial/Phyton/predict_avocado/img_after_cv2.jpg', target_size=(img_height, img_width)
+    'D:/URL/Séptimo ciclo 2021/Inteligencia artificial/Phyton/predict_avocado/img_after_cv2.jpg',
+    target_size=(img_height, img_width)
 )
 # Se utiliza este método para pasar la imágen a un array 3d que la red neuronal pueda interpretar
 img_array = keras.preprocessing.image.img_to_array(img)
@@ -68,7 +79,10 @@ img_array = tf.expand_dims(img_array, 0)  # Create a batch
 predictions = restored_keras_model.predict(img_array)
 score = tf.nn.softmax(predictions[0])
 # Devuelve al usuario la clase con mayor probabilidad.
+print("--------  RESULTADOS   --------")
 print(
-    "This image most likely belongs to {} with a {:.2f} percent confidence."
+    "Este aguacate pertenece a la etiqueta {} con un {:.2f}% de certeza."
         .format(mylist[np.argmax(score)], 100 * np.max(score))
 )
+print(print_time_left(np.argmax(score)))
+
