@@ -25,13 +25,16 @@ def tomarfoto():
 def recorte(carguardar, imgaleer):
     directory = carguardar
     img = cv2.imread(imgaleer, 1)
+    dim = (760, 760)
+    img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
     os.chdir(directory)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (5, 5), 8)
     blurred = cv2.GaussianBlur(blurred, (7, 7), 0)
     canny = cv2.Canny(blurred, 100, 300, apertureSize=3)  # apertura debe sesta entre 3 y 7
-    contours, _ = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     cnts = sorted(contours, key=cv2.contourArea, reverse=True)
+
     i = 1
     for c in cnts:
         x, y, w, h = cv2.boundingRect(c)
