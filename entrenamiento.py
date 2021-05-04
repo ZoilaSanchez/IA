@@ -42,6 +42,20 @@ AUTOTUNE = tf.data.AUTOTUNE
 train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=AUTOTUNE)
 val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
+# Debido a que se tiene un relativamente pequeño set de datos, se usa data augmentation que realiza transformaciones
+# a los sets ya definidos para crear más variedad y que se generalice mejor.
+data_augmentation = keras.Sequential(
+  [
+    layers.experimental.preprocessing.RandomFlip("horizontal",
+                                                 input_shape=(img_height,
+                                                              img_width,
+                                                              3)),
+    # Se define una rotación y un zoom pequeños para que las imágenes sigan pareciendo "naturales".
+    layers.experimental.preprocessing.RandomRotation(0.1),
+    layers.experimental.preprocessing.RandomZoom(0.1),
+  ]
+)
+
 # Se define la cantidad de labels que hay, en el caso de clasificación de estados de aguacates está tierno,
 # maduro y podrido
 num_classes = 3
@@ -50,20 +64,21 @@ num_classes = 3
 # pequeños posibles. Por lo tanto se aplica la función Rescaling para que queden entre valores de 0-1. También se
 # define que entraran imágenes de 128x128 con los 3 canales de colores.
 model = Sequential([
+    data_augmentation,
     layers.experimental.preprocessing.Rescaling(1. / 255, input_shape=(img_height, img_width, 3)),
     # El primer parámetro para conv2D es el número de filtos que la capa convolucional aprenderá. Este parámetro
     # determina el número de kernels que se convolucionarán con el volumen de entrada. Luego, como segundo parámetro
     # está el tamaño del kernel, que especifica el ancho y alto de la ventana convolucional 2D. Como tercer parámetro
     # está el padding, lo utilizamos en same puesto que se quiere que el volumen de salida sea el mismo que de entrada,
     # Finalmente se define que se utilizará la activación RELU, pues es la recomendada para capas escondidas.
-    layers.Conv2D(16, 3, padding='same', activation='relu'),
+    layers.Conv2D(16, (3, 3), padding='same', activation='relu'),
     # Luego se hace un max pooling para ayudar a ajustar la representación como para reducir el costo computacional
     # reduciendo el número de parámetros a aprender
-    layers.MaxPooling2D(),
-    layers.Conv2D(32, 3, padding='same', activation='relu'),
-    layers.MaxPooling2D(),
-    layers.Conv2D(64, 3, padding='same', activation='relu'),
-    layers.MaxPooling2D(),
+    layers.MaxPooling2D((2, 2)),
+    layers.Conv2D(32, (3, 3), padding='same', activation='relu'),
+    layers.MaxPooling2D((3, 3)),
+    layers.Conv2D(64, (3, 3), padding='same', activation='relu'),
+    layers.MaxPooling2D((3, 3)),
     layers.Flatten(),
     # Se agrega una capa oculta intermedia de neuronas totalmente conectadas de 128 neuronas.
     layers.Dense(128, activation='relu'),
@@ -88,3 +103,7 @@ history = model.fit(
     validation_data=val_ds,
     epochs=epochs
 )
+# Mediante este método se puede guardar el resultado del entrenamiento para su uso en otro script para realizar
+# únicamente la predicción con nuevos objetos.
+keras_model_path = "C:/Users/ACER/Desktop/Copia/IA/Modelo2"
+model.save(keras_model_path)
