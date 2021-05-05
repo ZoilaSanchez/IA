@@ -6,10 +6,15 @@ def menu():
     os.system('cls')  # NOTA para windows tienes que cambiar clear por cls
     print("Selecciona una opción")
     print("\t1 - Multiples imagenes")
-    print("\t2 - Predicción")
+    print("\t2 - Predicción para una imagen")
     print("\t3 - salir")
-
-
+print("--------------------------------------------")
+print("------------- Datos Generales --------------")
+print("--------------------------------------------")
+save_path = input("Ruta para almacenar imágen recortada....\n")
+labels_path = input("Carpeta que contiene las carpetas de imágenes....\n")
+model = input("Modelo a utilizar ubicado en....\n")
+print("")
 while True:
     # Mostramos el menu
     menu()
@@ -21,24 +26,23 @@ while True:
         proceso.recorte("C:\\Users\\Lopez\\Documents\\GitHub\\IA\\imagen",save_img)
         contenido = os.listdir('C:\\Users\\Lopez\\Documents\\GitHub\\IA\\imagen')
         for i in range(len(contenido)):
-         print("C:\\Users\\Lopez\\Documents\\GitHub\\IA\\imagen\\img" + str(i+1) + '.PNG')
+         #print("C:\\Users\\Lopez\\Documents\\GitHub\\IA\\imagen\\img" + str(i+1) + '.PNG')
          imga="C:\\Users\\Lopez\\Documents\\GitHub\\IA\\imagen\\img" + str(i+1) + '.PNG'
          print("--------------------------------------------")
          print("\n  Imagen multiple   NO. "+ str(i+1) +"  \n")
          print("--------------------------------------------")
          img_path = imga
-         save_path = input("Ruta para almacenar imágen recortada....\n")
-         labels_path = input("Carpeta que contiene las carpetas de imágenes....\n")
-         model = input("Modelo a utilizar ubicado en....\n")
          proceso.procesoreconocer(labels_path, model, img_path, save_path)
 
     elif opcionMenu == "2":
         print("")
-        print("Predecir imágen....\n")
+        print("--------------------------------------------")
+        print("------------ Predecir Una Imagen -----------")
+        print("--------------------------------------------")
         img_path = input("Ruta de imágen....\n")
-        save_path = input("Ruta para almacenar imágen recortada....\n")
-        labels_path = input("Carpeta que contiene las carpetas de imágenes....\n")
-        model = input("Modelo a utilizar ubicado en....\n")
+        #save_path = input("Ruta para almacenar imágen recortada....\n")
+        #labels_path = input("Carpeta que contiene las carpetas de imágenes....\n")
+        #model = input("Modelo a utilizar ubicado en....\n")
         proceso.procesoreconocer(labels_path, model, img_path, save_path)
     elif opcionMenu == "3":
         break
