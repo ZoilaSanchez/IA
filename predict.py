@@ -7,11 +7,11 @@ import cv2
 # Función para devolver el tiempo aproximado en el que se podrá consumir el aguacate.
 def print_time_left(etiqueta):
     if etiqueta == 2:
-        chain = "Tiempo de maduración restante aproximado: 4-5 días."
+        chain = "Tiempo de maduración restante aproximado: 4-5 días. \nEstado del aguacate: Medio"
     elif etiqueta == 1:
-        chain = "Está sobremadurado, no se recomienda para consumo."
+        chain = "Está sobremadurado, no se recomienda para consumo. \nEstado del aguacate: Malo"
     elif etiqueta == 0:
-        chain = "¡Listo para comer! \nAún se puede almacenar entre 1-2 días."
+        chain = "¡Listo para comer! \nAún se puede almacenar entre 1-2 días. \nEstado del aguacate: Bueno"
     return chain
 
 
