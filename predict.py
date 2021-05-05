@@ -69,7 +69,8 @@ def tomarfoto():
             break
     return 'opencv1.PNG'
 
-def recorte(carguardar, imgaleer, cargardatos, cargarmodelo, imgaen2):
+
+def recorte(carguardar, imgaleer):
     directory = carguardar
     img = cv2.imread(imgaleer, 1)
     dim = (760, 760)
@@ -81,14 +82,12 @@ def recorte(carguardar, imgaleer, cargardatos, cargarmodelo, imgaen2):
     canny = cv2.Canny(blurred, 100, 300, apertureSize=3)  # apertura debe sesta entre 3 y 7
     contours, _ = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     cnts = sorted(contours, key=cv2.contourArea, reverse=True)
-
     i = 1
     for c in cnts:
         x, y, w, h = cv2.boundingRect(c)
         recortada = img[y:y + h, x:x + w]
         show_image('imagen no:' + str(i), recortada)
         cv2.imwrite('img' + str(i) + '.PNG', recortada)
-        procesoreconocer(cargardatos, cargarmodelo, 'img'+str(i)+".PNG", imgaen2)
         i += 1
     return i-1
 # FUNCIONES----------------------------
@@ -120,10 +119,10 @@ def procesoreconocer(cargardatos,cargarmodelo,imagendemuestra,imgaen2):
     predictions = restored_keras_model.predict(img_array)
     score = tf.nn.softmax(predictions[0])
     # Devuelve al usuario la clase con mayor probabilidad.
-    print("--------  RESULTADOS   --------")
-    print(
-        "Este aguacate pertenece a la etiqueta {} con un {:.2f}% de certeza."
-            .format(mylist[np.argmax(score)], 100 * np.max(score))
-        )
+    print("------------------------------------------------------------------------------")
+    print("-------------------------------  RESULTADOS   --------------------------------")
+    print(" Este aguacate pertenece a la etiqueta {} con un {:.2f}% de certeza."
+            .format(mylist[np.argmax(score)], 100 * np.max(score)))
     print(print_time_left(np.argmax(score)))
+    print("-------------------------------------------------------------------------------")
 
