@@ -77,10 +77,14 @@ def recorte(carguardar, imgaleer):
     img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
     os.chdir(directory)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    show_image('imagen :', gray)
     blurred = cv2.GaussianBlur(gray, (5, 5), 8)
+    show_image('imagen :' , blurred)
     blurred = cv2.GaussianBlur(blurred, (7, 7), 0)
+    show_image('imagen :', blurred)
     canny = cv2.Canny(blurred, 100, 300, apertureSize=3)  # apertura debe sesta entre 3 y 7
-    contours, _ = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    show_image('imagen :', canny)
+    contours, _ = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     cnts = sorted(contours, key=cv2.contourArea, reverse=True)
     i = 1
     for c in cnts:
@@ -89,7 +93,7 @@ def recorte(carguardar, imgaleer):
         show_image('imagen no:' + str(i), recortada)
         cv2.imwrite('img' + str(i) + '.PNG', recortada)
         i += 1
-    return i-1
+
 # FUNCIONES----------------------------
 def procesoreconocer(cargardatos,cargarmodelo,imagendemuestra,imgaen2):
     # Se carga el nombre de las carpetas donde se encuentran las imágenes, correspondiendo a las etiquetas que utiliza
