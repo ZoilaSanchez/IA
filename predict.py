@@ -69,7 +69,7 @@ def tomarfoto():
             break
     return 'opencv1.PNG'
 
-def recorte(carguardar, imgaleer,cargardatos,cargarmodelo,imgaen2):
+def recorte(carguardar, imgaleer, cargardatos, cargarmodelo, imgaen2):
     directory = carguardar
     img = cv2.imread(imgaleer, 1)
     dim = (760, 760)
@@ -103,12 +103,13 @@ def procesoreconocer(cargardatos,cargarmodelo,imagendemuestra,imgaen2):
 
     # Se carga la imagen y se muestra el proceso para quitar el fondo.
     img_path = imagendemuestra
-    recortar(img_path)
+    recortar(img_path, imgaen2)
     img_height = 180
     img_width = 180
     # Se carga la imágen a analizar con un preprocesamiento que la estandariza al tamaño con el que se entrenó la CNN
+    pathimg = imgaen2 + '/img_after_cv2.jpg'
     img = keras.preprocessing.image.load_img(
-        imgaen2,
+        pathimg,
         target_size=(img_height, img_width)
     )
     # Se utiliza este método para pasar la imágen a un array 3d que la red neuronal pueda interpretar
